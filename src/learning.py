@@ -29,9 +29,6 @@ start_time = time.time()
 cachedir = './cache'
 memory = Memory(cachedir, verbose=0)
 
-# Scaler
-scaler = RobustScaler()
-
 # Annoying
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
@@ -107,86 +104,183 @@ def zero_pad(self) -> None:
 
 
 
-hdf5 = '/home/bread/Documents/projects/neutrino/data/hdf5/NuMu.zst_cleaned_transformed_cascade.hdf5'
-hdf5_load = HDF5Loader(hdf5, 'output_label_names', 'labels')
-hdf5_df = hdf5_load.get_df()
+# hdf5 = '/home/bread/Documents/projects/neutrino/data/hdf5/NuMu.zst_cleaned_transformed_cascade.hdf5'
+# # hdf5_df = get_hdf5(hdf5, 'output_label_names', 'labels')
 
+path_arr = [
+  'data/hdf5/NuMu_genie_149999_000010_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000020_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000030_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000040_level6.zst_cleanedpulses_transformed_IC19.hdf5',  
+  'data/hdf5/NuMu_genie_149999_000050_level6.zst_cleanedpulses_transformed_IC19.hdf5',  
+  'data/hdf5/NuMu_genie_149999_000060_level6.zst_cleanedpulses_transformed_IC19.hdf5', 
+  'data/hdf5/NuMu_genie_149999_000070_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000080_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000090_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000110_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000120_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000130_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000140_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000150_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000160_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000170_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000180_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000190_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000210_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000220_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000240_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000250_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000260_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000270_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000280_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000290_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000310_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000320_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000330_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000340_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000350_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000360_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000370_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000380_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000390_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000410_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000420_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000430_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000440_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000450_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000460_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000470_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000480_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000490_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000510_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000520_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000530_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000540_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000550_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000560_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000570_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000580_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+  'data/hdf5/NuMu_genie_149999_000590_level6.zst_cleanedpulses_transformed_IC19.hdf5',
+]
+
+scale_y = False
+hdf5_df = cat_hdf5(path_arr, 'output_label_names', 'labels')
+
+charge_change = hdf5_df['Charge'].pct_change(periods=1).dropna()
+distance = np.sqrt(hdf5_df['X']**2 + hdf5_df['Y']**2 + hdf5_df['Z']**2)
+hdf5_df = hdf5_df[1:]
+
+hdf5_df['Charge Change'] = charge_change
+hdf5_df['Track Change'] = distance
+
+print(hdf5_df)
+
+# plt.title("Inelasticity Distribution")
+# plt.hist(hdf5_df['Cascade']/hdf5_df['Energy'], bins=50, label='True Inelasticity', alpha=0.6, color='olive')
+# plt.legend()
+# plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/inelasticity_distribution.png')
+# plt.show()
+
+y = np.array(hdf5_df['Cascade']/hdf5_df['Energy'])
+
+print(len(y))
 
 hdf5_df = hdf5_df.drop(['Cascade'], axis=1)
-X = np.array(hdf5_df.drop('Energy', axis=1))
+hdf5_df = hdf5_df.drop(['Energy'], axis=1)
+hdf5_df = hdf5_df.drop(['Flavor'], axis=1)
 
-y = hdf5_df['Energy']
-
+scaler = RobustScaler()
+X = np.array(hdf5_df)
 X = scaler.fit_transform(X)
 
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+if scale_y:
+  scaler = RobustScaler()
 
-# model = keras.Sequential()
+  y = scaler.fit_transform(np.reshape(y, (-1, 1)))
 
-# #(~345, 4) size data
-# # model.add(Dense(512, input_dim=4, activation='sigmoid'))
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# def run_network(X, y, early, layers):
-
-
-#   early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', # Monitor the validation loss
-#                               min_delta=1e-20, # Minimum change to qualify as an improvement
-#                               patience=10, # Number of epochs with no improvement after which training will be stopped
-#                               verbose=1, # Print messages when training is stopped
-#                               mode='min', # Mode for monitoring the validation loss
-#                               restore_best_weights=True) # Restore the best model weights after training
+model = keras.Sequential()
 
 
-# dim_val = len(X[0])
-# model.add(layers.Dense(dim_val, input_dim=len(X[0]), activation='sigmoid'))
-
-# # model.add(layers.Dense(300, activation='relu'))
-# model.add(layers.Dense(4, activation='relu'))
-# model.add(layers.Dense(1, activation='exponential'))
-
-# model.compile(loss='mean_squared_error', optimizer='adam', metrics=['mae'])
-
-# history = model.fit(X_train, y_train, 
-#                       validation_split=0.20, 
-#                       epochs=200, 
-#                       batch_size=8, 
-#                       verbose=0) 
-#                       #callbacks=[early_stop])
-
-# print(model.evaluate(X_test, y_test))
-
-# fig = plt.figure()
-# ax = fig.add_subplot(1, 1, 1)
-# plt.plot(history.history['mae'])
-# plt.plot(history.history['val_mae'])
-# # ax.set_yscale('log')
-# ax.xaxis.set_minor_locator(AutoMinorLocator())
-# plt.title('Model Mean Absolute Error')
-# plt.ylabel('Mean Absolute Error')
-# plt.xlabel('Epoch')
-# plt.legend(['train', 'test'], loc='upper left')
-# plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/nn_mae_history.png')
-# plt.show()
-
-# prediction = model.predict(X_test)
-# prediction = [i[0] for i in prediction]
+def run_network(X, y, early, layers):
 
 
-# plt.hist2d(y_test, prediction, bins=100)
-# # plt.xlim([0,2])
-# # plt.ylim([0,2])
-# plt.xlabel('Truth')
-# plt.ylabel('Predicted')
-# plt.title('Predicting Energy')
-# # plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/nn_energy_2d.png')
-# plt.show()
+  early_stop = keras.callbacks.EarlyStopping(
+    monitor='val_loss', # Monitor the validation loss
+    min_delta=1e-20, # Minimum change to qualify as an improvement
+    patience=10, # Number of epochs with no improvement after which training will be stopped
+    verbose=1, # Print messages when training is stopped
+    mode='min', # Mode for monitoring the validation loss
+    restore_best_weights=True) # Restore the best model weights after training
 
-# plt.title("Truth vs Predicted Inelasticity Using NN")
-# plt.hist(y_test, bins=50, label='Truth', alpha=0.6, color='olive')
-# plt.hist(prediction, bins=50, label='Prediction', alpha=0.6, color='deepskyblue')
-# plt.legend()
-# # plt.savefig('/home/jeremy/Documents/Neutrino/data/fig/nn_energy_1d.png')
-# plt.show()
+
+dim_val = len(X[0])
+# model.add(layers.Dense(4, input_dim=len(X[0]), activation='sigmoid'))
+model.add(keras.Input(shape=np.shape(X[0])))
+
+# relu, exponential, sigmoid -- options
+model.add(layers.Dense(512, activation='tanh'))
+model.add(layers.Dense(256, activation='tanh'))
+model.add(layers.Dense(128, activation='tanh'))
+# model.add(layers.Dense(128, activation='sigmoid'))
+model.add(layers.Dense(64, activation='tanh'))
+# model.add(layers.Dense(64, activation='sigmoid'))
+model.add(layers.Dense(32, activation='tanh'))
+# model.add(layers.Dense(32, activation='sigmoid'))
+model.add(layers.Dense(16, activation='tanh'))
+model.add(layers.Dense(8, activation='tanh'))
+model.add(layers.Dense(4, activation='sigmoid'))
+model.add(layers.Dense(1, activation='sigmoid'))
+
+model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mae'])
+
+history = model.fit(
+  X_train, 
+  y_train, 
+  validation_split=0.30, 
+  epochs=400, 
+  batch_size=512, 
+  verbose=2
+) 
+  #callbacks=[early_stop])
+
+print(model.evaluate(X_test, y_test))
+
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1)
+plt.plot(history.history['mae'])
+plt.plot(history.history['val_mae'])
+# ax.set_yscale('log')
+ax.xaxis.set_minor_locator(AutoMinorLocator())
+plt.title('Model Mean Absolute Error')
+plt.ylabel('Mean Absolute Error')
+plt.xlabel('Epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/nn_mae_history.png')
+plt.show()
+
+prediction = model.predict(X_test)
+prediction = [i[0] for i in prediction]
+
+if scale_y:
+  y_test = [i[0] for i in y_test]
+
+plt.hist2d(y_test, prediction, bins=30)
+plt.xlim([0,1])
+plt.ylim([0,1])
+plt.xlabel('True Inelasticity')
+plt.ylabel('Predicted Inelasticity')
+plt.title('Using Neural Network to Predict Neutrino Ineslasticity - 2d Histogram')
+plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/nn_inelasticity_2d.png')
+plt.show()
+
+plt.title("Using Neural Network to Predict Neutrino Ineslasticity - 1d Histogram")
+plt.hist(y_test, bins=50, label='True Inelasticity', alpha=0.6, color='olive')
+plt.hist(prediction, bins=50, label='Predicted Inelasticity', alpha=0.6, color='deepskyblue')
+plt.legend()
+plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/nn_inelasticity_1d_histogram.png')
+plt.show()
 
 
 
@@ -233,10 +327,10 @@ def get_db_compress(index_value=None, file_path='./data/db/oscNext_genie_level5_
 # print(len(X))
 # print(len(y))
 
-X1 = X[-50:]
-X = X[:-50]
-y1 = y[-50:]
-y = y[:-50]
+# X1 = X[-50:]
+# X = X[:-50]
+# y1 = y[-50:]
+# y = y[:-50]
 
 # print(X1)
 # print(y1)
@@ -278,19 +372,19 @@ y = y[:-50]
 # y1 = y[-1500:]
 # y = y[:-1501]
 
-model = RandomForestRegressor(n_estimators=40, random_state=30)
-model.fit(X, y)
+# model = RandomForestRegressor(n_estimators=40, random_state=30)
+# model.fit(X, y)
 
-prediction = model.predict(X1)
+# prediction = model.predict(X1)
 
-plt.hist2d(y1, prediction, bins=25)
-plt.show()
+# plt.hist2d(y1, prediction, bins=25)
+# plt.show()
 
-plt.title("Truth vs Predicted Inelasticity Using Random Forest")
-plt.hist(y, bins=1, label='Truth', alpha=0.6, color='olive')
-plt.hist(prediction, bins=1, label='Prediction', alpha=0.6, color='deepskyblue')
-plt.legend()
-plt.show()
+# plt.title("Truth vs Predicted Inelasticity Using Random Forest")
+# plt.hist(y, bins=1, label='Truth', alpha=0.6, color='olive')
+# plt.hist(prediction, bins=1, label='Prediction', alpha=0.6, color='deepskyblue')
+# plt.legend()
+# plt.show()
 
 
 

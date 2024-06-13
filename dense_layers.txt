@@ -1,0 +1,13 @@
+4, 1, sigmoid, 150, 0.1892
+4, 4, 1, sigmoid, 150, 0.1903 - more volatile
+4, 4, 1, sigmoid, 250, 0.1893
+4, 4, 4, 1, sigmoid, 250, 0.1903
+8, 1, sigmoid, 250, 0.1877 
+16, 1, sigmoid, 250, 0.1882
+12, 1, sigmoid, 250, 0.1882
+12, 12, 1, sigmiod, 250, 0.1879 - best 2d histogram try more epochs
+12, 12, 12, 1, sigmoid, 250, 0.1883
+16, 16, 1, sigmoid, 250, 0.1874
+16, 16, 16, 16, 1, sigmoid, 250, 0.1881
+12, 12, 1, relu, relu, sigmoid, 250, 0.1924 - much worse training graph
+12, 12, 1, sigmoid, 500, 

@@ -4,10 +4,16 @@ import sqlite3
 import numpy as np
 import pandas as pd
 
+
 from keras import layers
+from joblib import Memory
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
+
+# Caching
+cachedir = './cache'
+memory = Memory(cachedir, verbose=0)
 
 # Pads based on the event with the longest length
 def zero_pad(group, max_len):
@@ -27,48 +33,54 @@ class DOMData:
     dom_z: float
     charge: float
 
-class HDF5Loader():
-
-    def __init__(self, path, header, data) -> None:
-        self.path = path
-        self.header = header
-        self.data = data
-
     
-    def get_df(self) -> pd.DataFrame:
+def get_hdf5(path, header, data) -> pd.DataFrame:
 
-        with h5py.File(self.path, 'r') as hdf:
-            # ls = list(hdf.keys())
+    with h5py.File(path, 'r') as hdf:
+        # ls = list(hdf.keys())
+        data = np.array(hdf.get('labels'))
+        header = np.array(hdf.get('output_label_names'))
+        header = [str(i).replace("b", "").strip("'") for i in header]
+
+        df = pd.DataFrame(data, columns=header)
+    
+    return df
+    
+
+def cat_hdf5(path_array, header, data) -> pd.DataFrame:
+
+    hdf5_df = pd.DataFrame()
+
+    for path in path_array:
+        with h5py.File(path, 'r') as hdf:
             data = np.array(hdf.get('labels'))
             header = np.array(hdf.get('output_label_names'))
             header = [str(i).replace("b", "").strip("'") for i in header]
+            # header = header[:-1]
 
             df = pd.DataFrame(data, columns=header)
-        
-        return df
+
+            hdf5_df = pd.concat([hdf5_df, df], ignore_index=True)
+
+    return hdf5_df
+
+def get_db(path) -> Tuple[pd.DataFrame, pd.DataFrame]:
+
+    connect = sqlite3.connect(path)
+
+    truth_cursor = connect.execute('SELECT * FROM truth')
+    truth_headers = [description[0] for description in truth_cursor.description]
+
+    pulse_cursor = connect.execute('SELECT * FROM SRTTWOfflinePulsesDC')
+    pulse_headers = [description[0] for description in pulse_cursor.description]
     
-class DBLoader():
+    pulse = pd.read_sql('SELECT * FROM SRTTWOfflinePulsesDC', connect)
+    truth = pd.read_sql('SELECT * FROM truth', connect)
 
-    def __init__(self, path) -> None:
-        self.path = path
+    pulse_df = pd.DataFrame(pulse, columns=pulse_headers)
+    truth_df = pd.DataFrame(truth, columns=truth_headers)
 
-    def get_db(self) -> pd.DataFrame:
-
-        connect = sqlite3.connect(self.path)
-
-        truth_cursor = connect.execute('SELECT * FROM truth')
-        truth_headers = [description[0] for description in truth_cursor.description]
-
-        pulse_cursor = connect.execute('SELECT * FROM SRTTWOfflinePulsesDC')
-        pulse_headers = [description[0] for description in pulse_cursor.description]
-        
-        pulse = pd.read_sql('SELECT * FROM SRTTWOfflinePulsesDC', connect)
-        truth = pd.read_sql('SELECT * FROM truth', connect)
-
-        pulse_df = pd.DataFrame(pulse, columns=pulse_headers)
-        truth_df = pd.DataFrame(truth, columns=truth_headers)
-
-        return pulse_df, truth_df
+    return pulse_df, truth_df
 
 
 class PulseDataProcessing():
@@ -142,7 +154,7 @@ class PulseDataProcessing():
     def normalize(self) -> None:
         assert self.padded_state is False, "normalize before sublisting"
 
-    
+
     def zero_pad(self) -> None:
         """
         Zero pads events to make each event the same length. 
@@ -160,7 +172,7 @@ class PulseDataProcessing():
         self.pulse_shape = tuple(np.flip(np.shape(self.pulse)))
         self.padded_state = True
 
-    
+
     def sublist(self) -> None:
         """
         Creates a list of events with each event having a list of data. 
