@@ -1,10 +1,12 @@
 import keras
+import torch
 import numpy as np
 import pandas as pd
 import constants as c
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+from torch import nn
 from joblib import Memory
 from data_process import *
 from matplotlib.ticker import AutoMinorLocator
@@ -203,7 +205,29 @@ def feature_adding():
 
     return pulse, truth
 
+# TODO fill out this framework
+class NeuralNetwork():
 
+    def __init__(self) -> None:
+        pass
+
+    
+    def build(self):
+        pass
+
+    def train(self):
+        pass
+
+    def test(self):
+        pass
+
+    def eval(self):
+        pass
+
+    def plot(self):
+        pass
+
+# TODO move this into a class with more functionality and readability
 def neural_network(X, y, X_scaler=RobustScaler(), y_scaler=StandardScaler(), scale_x=True, scale_y=False, early=False, save=True, log=False):
 
     if scale_x:
@@ -285,6 +309,28 @@ def neural_network(X, y, X_scaler=RobustScaler(), y_scaler=StandardScaler(), sca
     if save:
         plt.savefig('/home/bread/Documents/projects/neutrino/data/fig/nn_inelasticity_2d.png')
     plt.show()
+
+# TODO: Another option to do following 
+# https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html
+class NeuralNetwork(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+        self.sigmoid_stack = nn.Sequential(
+            nn.Sigmoid(),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        logits = self.sigmoid_stack
+        return logits
+
+
+def train_loop(X, y, model, loss_fn):
+    return
+
+def test_loop(X, y, model, loss_fn):
+    return
 
 
 if __name__ == "__main__":

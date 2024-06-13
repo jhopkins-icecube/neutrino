@@ -10,4 +10,34 @@
 16, 16, 1, sigmoid, 250, 0.1874
 16, 16, 16, 16, 1, sigmoid, 250, 0.1881
 12, 12, 1, relu, relu, sigmoid, 250, 0.1924 - much worse training graph
-12, 12, 1, sigmoid, 500, 
+12, 12, 1, sigmoid, 500, 0.1867
+
+Doubled training data size
+12, 12, 1, sigmoid, 250, 0.1852
+
+Doubled training data size again
+12, 12, 1, sigmoid, 250, 0.1869
+
+Going back
+12, 12, 1, sigmoid, 250, 0.1876
+12, 12, 1, sigmoid, 500, 0.1865
+16, 16, 1, sigmoid, 250, 0.1868
+
+Back to quadrupled since start
+24, 24, 1, sigmoid, 250, 0.1858
+24, 24, 24, 1, sigmoid, 250, 0.1865
+36, 36, 1, sigmoid, 250, 0.1845
+48, 48, 1, sigmoid, 250, 0.1861
+36, 1, sigmoid, 250, 0.1877
+36, 36, 1, sigmoid, 150, 0.1849 - issues with 1d plot
+128, 64, 32, 16, 1, sigmoid, 150, 0.1832 - still some issues with 1d plot
+256, 128, 64, 32, 16, 8, 1, sigmoid, 100, 0.1865
+256, 128, 64, 32, 16, 8, 4, 1, sigmoid, 250, split = 0.4, batch = 8, 0.2013
+256, 128, 64, 32, 16, 8, 4, 1, sigmoid, 100, split = 0.3, batch = 16, 0.1869
+256, 128, 64, 32, 16, 8, 4, 1, sigmoid, 150, split = 0.3, batch = 32, 0.1855
+512, 256, 128, 64, 32, 16, 8, 4, 1, sigmoid, 150, split = 0.3, batch = 64, 0.2407 - really bad
+128, 128, 64, 32, 16, 8, 4, 1, sigmoid, 150, split = 0.3, batch = 64, 
+
+Added charge and some more data
+256, 128, 64, 32, 16, 8, 4, 1, sigmoid, tanh, sigmoid, 400, split = 0.3, batch = 512, 0.1818 - 2d is bad 1d is okay lowest error
+256, 128, 64, 32, 16, 8, 4, 1, sigmoid, tanh, sigmoid, 400, split = 0.3, batch = 256, 0.1818 - 

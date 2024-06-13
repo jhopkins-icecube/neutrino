@@ -220,16 +220,12 @@ dim_val = len(X[0])
 model.add(keras.Input(shape=np.shape(X[0])))
 
 # relu, exponential, sigmoid -- options
-model.add(layers.Dense(512, activation='tanh'))
-model.add(layers.Dense(256, activation='tanh'))
-model.add(layers.Dense(128, activation='tanh'))
-# model.add(layers.Dense(128, activation='sigmoid'))
-model.add(layers.Dense(64, activation='tanh'))
-# model.add(layers.Dense(64, activation='sigmoid'))
-model.add(layers.Dense(32, activation='tanh'))
-# model.add(layers.Dense(32, activation='sigmoid'))
-model.add(layers.Dense(16, activation='tanh'))
-model.add(layers.Dense(8, activation='tanh'))
+model.add(layers.Dense(256, activation='sigmoid'))
+model.add(layers.Dense(128, activation='sigmoid'))
+model.add(layers.Dense(64, activation='sigmoid'))
+model.add(layers.Dense(32, activation='sigmoid'))
+model.add(layers.Dense(16, activation='sigmoid'))
+model.add(layers.Dense(8, activation='sigmoid'))
 model.add(layers.Dense(4, activation='sigmoid'))
 model.add(layers.Dense(1, activation='sigmoid'))
 
@@ -239,8 +235,8 @@ history = model.fit(
   X_train, 
   y_train, 
   validation_split=0.30, 
-  epochs=400, 
-  batch_size=512, 
+  epochs=100, 
+  batch_size=256, 
   verbose=2
 ) 
   #callbacks=[early_stop])
